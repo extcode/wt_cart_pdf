@@ -1,0 +1,54 @@
+plugin.wtcart_pdf {
+  order {
+    template = EXT:wt_cart_pdf/files/templates/order/cart_table.html
+
+    include_pdf = typo3conf/ext/wt_cart_pdf/files/templates/order/include.pdf
+
+    dir = fileadmin/wt_cart_pdf/order
+
+    abortonerror = 0
+
+    address {
+      positionX = 20
+      positionY = 45
+    }
+
+    subject {
+      positionX = 20
+      positionY = 90
+    }
+
+    cart {
+      positionX = 25
+      positionY = 110
+      width = 160
+      height = 00
+    }
+  }
+
+  invoice {
+    template = EXT:wt_cart_pdf/files/templates/invoice/cart_table.html
+
+    include_pdf = typo3conf/ext/wt_cart_pdf/files/templates/invoice/include.pdf
+
+    dir = fileadmin/wt_cart_pdf/invoice
+
+    abortonerror = 0
+
+    address {
+      positionX = 20
+      positionY = 45
+    }
+
+    subject {
+      positionX = 20
+      positionY = 90
+    }
+
+    cart {
+      positionX = 25
+      positionY = 110
+      width = 160
+    }
+  }
+}

@@ -1,0 +1,107 @@
+plugin.tx_wtcart_pdf {
+
+  order {
+    font-size = 8
+
+    template = {$plugin.wtcart_pdf.order.template}
+    include_pdf = {$plugin.wtcart_pdf.order.include_pdf}
+    dir = {$plugin.wtcart_pdf.order.dir}
+
+    abortOnError = {$plugin.wtcart_pdf.order.abortonerror}
+
+    address {
+      content = COA
+      content {
+        0 = TEXT
+        0 = "BOOKING ADDRESS"
+      }
+      positionX = {$plugin.wtcart_pdf.order.address.positionX}
+      positionY = {$plugin.wtcart_pdf.order.address.positionY}
+    }
+
+    subject {
+      content < plugin.tx_wtcart_pi1.settings.overall.ordernumber
+      positionX = {$plugin.wtcart_pdf.order.subject.positionX}
+      positionY = {$plugin.wtcart_pdf.order.subject.positionY}
+    }
+
+    cart {
+      positionX = {$plugin.wtcart_pdf.order.cart.positionX}
+      positionY = {$plugin.wtcart_pdf.order.cart.positionY}
+      width = {$plugin.wtcart_pdf.order.cart.width}
+    }
+
+    additionaltextblocks {
+      1 {
+        positionX = 120
+        positionY = 85
+        width = 65
+        align = R
+        content = COA
+        content {
+          10 = TEXT
+          10.value = Jena, den
+          10.noTrimWrap = || |
+          20 = TEXT
+          20 {
+            data = date : U
+            strftime = %d. %m. %Y
+          }
+        }
+      }
+    }
+  }
+
+  invoice {
+    font-size = 8
+
+    template = {$plugin.wtcart_pdf.invoice.template}
+    include_pdf = {$plugin.wtcart_pdf.invoice.include_pdf}
+    dir = {$plugin.wtcart_pdf.invoice.dir}
+
+    abortOnError = {$plugin.wtcart_pdf.invoice.abortonerror}
+
+    address {
+      content = COA
+      content {
+        0 = TEXT
+        0 = "INVOICE ADDRESS"
+      }
+      positionX = {$plugin.wtcart_pdf.invoice.address.positionX}
+      positionY = {$plugin.wtcart_pdf.invoice.address.positionY}
+    }
+
+    subject {
+      content < plugin.tx_wtcart_pi1.settings.overall.invoice_number
+      positionX = {$plugin.wtcart_pdf.invoice.subject.positionX}
+      positionY = {$plugin.wtcart_pdf.invoice.subject.positionY}
+    }
+
+    cart {
+      positionX = {$plugin.wtcart_pdf.invoice.cart.positionX}
+      positionY = {$plugin.wtcart_pdf.invoice.cart.positionY}
+      width = {$plugin.wtcart_pdf.invoice.cart.width}
+    }
+
+    additionaltextblocks {
+      1 {
+        position-x = 120
+        position-y = 85
+        width = 65
+        align = R
+        content = COA
+        content {
+          10 = TEXT
+          10.value = Jena, den
+          10.noTrimWrap = || |
+          20 = TEXT
+          20 {
+            data = date : U
+            strftime = %d. %m. %Y
+          }
+        }
+      }
+    }
+  }
+
+}
