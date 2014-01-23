@@ -72,7 +72,7 @@ plugin.tx_wtcart_pdf {
     }
 
     subject {
-      content < plugin.tx_wtcart_pi1.settings.overall.invoice_number
+      content < plugin.tx_wtcart_pi1.settings.overall.invoicenumber
       positionX = {$plugin.wtcart_pdf.invoice.subject.positionX}
       positionY = {$plugin.wtcart_pdf.invoice.subject.positionY}
     }
