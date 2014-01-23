@@ -87,8 +87,10 @@ class Tx_WtCartPdf_Hooks_Render extends tslib_pibase {
 		$this->conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_wtcart_pdf.'][$type . '.'];
 		$this->abortOnError = $this->wtcartconf['abortOnError'];
 
+		$cart = $params['cart'];
+
 		$this->getPath( );
-		$this->getFilename( );
+		$this->getFilename( $cart );
 
 		if ( ! $this->pdfDirExists() ) {
 			return 1;
@@ -105,7 +107,7 @@ class Tx_WtCartPdf_Hooks_Render extends tslib_pibase {
 			return 1;
 		}
 
-		$params['files'][] = $this->pdf_path . '/' . $this->pdf_filename;
+		$params['files'][ $type ] = $this->pdf_path . '/' . $this->pdf_filename;
 
 		return 0;
 	}
@@ -138,11 +140,11 @@ class Tx_WtCartPdf_Hooks_Render extends tslib_pibase {
 
 
 	/**
-	 * @param $session
+	 * @param $params
 	 * @param string $type
 	 * @return int
 	 */
-	private function renderPdf(&$session, $type) {
+	private function renderPdf(&$params, $type) {
 		$pdf = new FPDI();
 		$pdf->AddPage();
 
@@ -155,12 +157,12 @@ class Tx_WtCartPdf_Hooks_Render extends tslib_pibase {
 		$pdf->SetFont('Helvetica','',$this->conf['font-size']);
 
 		$this->renderAddress( $pdf );
-		$this->renderSubject( $pdf );
+		$this->renderSubject( $pdf, $params['cart'] );
 		$this->renderAdditionalTextblocks( $pdf );
 
 		$this->renderCart( $pdf );
 
-		$this->renderOptions($pdf, $session['payment']);
+		$this->renderOptions( $pdf, $params['payment'] );
 
 		$pdf->Output( $this->pdf_path . '/' . $this->pdf_filename, 'F' );
 	}
@@ -199,14 +201,9 @@ class Tx_WtCartPdf_Hooks_Render extends tslib_pibase {
 
 	/**
 	 * @param $pdf
+	 * @param $cart Tx_WtCart_Domain_Model_Cart
 	 */
-	private function renderSubject( &$pdf ) {
-		$wtcartConf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_wtcart_pi1.'];
-		/**
-		 * @var $cart Tx_WtCart_Domain_Model_Cart
-		 */
-		$cart = unserialize($GLOBALS['TSFE']->fe_user->getKey('ses', 'wt_cart_' . $wtcartConf['main.']['pid']));
-
+	private function renderSubject( &$pdf, $cart ) {
 		$params = array(
 			'ordernumber' => $cart->getOrderNumber(),
 			'invoicenumber' => $cart->getInvoiceNumber()
@@ -296,16 +293,22 @@ class Tx_WtCartPdf_Hooks_Render extends tslib_pibase {
 	}
 
 	/**
+	 * @param $cart Tx_WtCart_Domain_Model_Cart
 	 * @return string
 	 */
-	private function getFilename( ) {
-		$wtcartConf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_wtcart_pi1.'];
-		$cart = unserialize($GLOBALS['TSFE']->fe_user->getKey('ses', 'wt_cart_' . $wtcartConf['main.']['pid']));
-		$orderNumber = $cart->getOrderNumber();
+	private function getFilename( $cart ) {
+		$params = array(
+			'ordernumber' => $cart->getOrderNumber(),
+			'invoicenumber' => $cart->getInvoiceNumber()
+		);
+		$this->cObj = t3lib_div::makeInstance( 'tslib_cObj' );
+		$this->cObj->start( $params, $this->conf['pdf_filename'] );
 
-		$date = date("Ymd");
+		$this->pdf_filename = $this->cObj->cObjGetSingle($this->conf['pdf_filename'], $this->conf['pdf_filename.']);
 
-		$this->pdf_filename = $this->sanitize_file_name( $date . '-' . $orderNumber . '.pdf' );
+		if ( ! preg_match('/\.pdf$/', $this->pdf_filename) ) {
+			$this->pdf_filename .= '.pdf';
+		}
 
 		return $this->pdf_filename;
 	}

@@ -7,6 +7,8 @@ plugin.tx_wtcart_pdf {
     include_pdf = {$plugin.wtcart_pdf.order.include_pdf}
     dir = {$plugin.wtcart_pdf.order.dir}
 
+    pdf_filename < plugin.tx_wtcart_pi1.settings.fields.ordernumber
+
     abortOnError = {$plugin.wtcart_pdf.order.abortonerror}
 
     address {
@@ -58,6 +60,8 @@ plugin.tx_wtcart_pdf {
     template = {$plugin.wtcart_pdf.invoice.template}
     include_pdf = {$plugin.wtcart_pdf.invoice.include_pdf}
     dir = {$plugin.wtcart_pdf.invoice.dir}
+
+    pdf_filename < plugin.tx_wtcart_pi1.settings.fields.invoicenumber
 
     abortOnError = {$plugin.wtcart_pdf.invoice.abortonerror}
 
