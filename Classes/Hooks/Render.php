@@ -64,23 +64,17 @@ class Tx_WtCartPdf_Hooks_Render extends tslib_pibase {
 	/**
 	 * @param $params
 	 * @param $obj
-	 * @param string $type
-	 * @internal param $session
-	 * @return int
 	 */
-	public function createPdfs(&$params, &$obj, $type = NULL) {
-		if ($type != NULL) {
-			$this->createPdf($params, $type);
-		} else {
-			$types = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_wtcart_pdf.'];
+	public function afterSetOrderNumber(&$params, &$obj) {
+		$this->createPdf($params, 'order');
+	}
 
-			if ($types) {
-				foreach ($types as $key => $type) {
-					$this->createPdf($params, rtrim($key, '.'));
-				}
-			}
-		}
-
+	/**
+	 * @param $params
+	 * @param $obj
+	 */
+	public function afterSetInvoiceNumber(&$params, &$obj) {
+		$this->createPdf($params, 'invoice');
 	}
 
 	/**
