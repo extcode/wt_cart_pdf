@@ -208,7 +208,8 @@ class Tx_WtCartPdf_Hooks_Render extends tslib_pibase {
 		$cart = unserialize($GLOBALS['TSFE']->fe_user->getKey('ses', 'wt_cart_' . $wtcartConf['main.']['pid']));
 
 		$params = array(
-			'ordernumber' => $cart->getOrderNumber()
+			'ordernumber' => $cart->getOrderNumber(),
+			'invoicenumber' => $cart->getInvoiceNumber()
 		);
 
 		$this->cObj = t3lib_div::makeInstance( 'tslib_cObj' );
