@@ -154,7 +154,23 @@ class Tx_WtCartPdf_Hooks_Render extends tslib_pibase {
 			$pdf->useTemplate($tplIdx, 0, 0, 210);
 		}
 
-		$pdf->SetFont('Helvetica','',$this->conf['font-size']);
+		if ($this->conf['font']) {
+			$font = $this->conf['font'] ;
+		} else {
+			$font = 'Helvetica';
+		}
+		if ($this->conf['fontStyle']) {
+			$fontStyle = $this->conf['fontStyle'] ;
+		} else {
+			$fontStyle = '';
+		}
+		if ($this->conf['fontSize']) {
+			$fontSize = $this->conf['fontSize'] ;
+		} else {
+			$fontSize = 8;
+		}
+
+		$pdf->SetFont( $font, $fontStyle, $fontSize );
 
 		$this->renderAddress( $pdf );
 		$this->renderSubject( $pdf, $params['cart'] );
@@ -200,7 +216,16 @@ class Tx_WtCartPdf_Hooks_Render extends tslib_pibase {
 				$width = 80;
 			}
 
+			if ($this->conf['address.']['fontSize']) {
+				$pdf->setFontSize( $this->conf['address.']['fontSize'] );
+			}
+
+
 			$pdf->writeHtmlCell($width, 0, $positionX, $positionY, $content);
+
+			if ($this->conf['address.']['fontSize']) {
+				$pdf->setFontSize( $this->conf['fontSize'] );
+			}
 		}
 	}
 
@@ -228,7 +253,15 @@ class Tx_WtCartPdf_Hooks_Render extends tslib_pibase {
 				$width = 160;
 			}
 
+			if ($this->conf['subject.']['fontSize']) {
+				$pdf->setFontSize( $this->conf['subject.']['fontSize'] );
+			}
+
 			$pdf->writeHtmlCell($width, 0, $positionX, $positionY, $content);
+
+			if ($this->conf['subject.']['fontSize']) {
+				$pdf->setFontSize( $this->conf['fontSize'] );
+			}
 		}
 	}
 
@@ -239,7 +272,15 @@ class Tx_WtCartPdf_Hooks_Render extends tslib_pibase {
 		foreach ($this->conf['additionaltextblocks.'] as $key => $value) {
 			$html = $GLOBALS['TSFE']->cObj->cObjGetSingle($value['content'], $value['content.']);
 
+			if ($value['fontSize']) {
+				$pdf->setFontSize( $value['fontSize'] );
+			}
+
 			$pdf->writeHTMLCell($value['width'], $value['height'], $value['positionX'], $value['positionY'], $html, 0, 2, 0, true, $value['align'] ? $value['align'] : 'L', true);
+
+			if ($value['fontSize']) {
+				$pdf->setFontSize( $this->conf['fontSize'] );
+			}
 		}
 	}
 

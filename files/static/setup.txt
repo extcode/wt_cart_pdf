@@ -1,7 +1,7 @@
 plugin.tx_wtcart_pdf {
 
   order {
-    font-size = 8
+    fontSize = 8
 
     template = {$plugin.wtcart_pdf.order.template}
     include_pdf = {$plugin.wtcart_pdf.order.include_pdf}
