@@ -19,12 +19,14 @@ plugin.tx_wtcart_pdf {
       }
       positionX = {$plugin.wtcart_pdf.order.address.positionX}
       positionY = {$plugin.wtcart_pdf.order.address.positionY}
+      width     = {$plugin.wtcart_pdf.order.address.width}
     }
 
     subject {
       content < plugin.tx_wtcart_pi1.settings.overall.ordernumber
       positionX = {$plugin.wtcart_pdf.order.subject.positionX}
       positionY = {$plugin.wtcart_pdf.order.subject.positionY}
+      width     = {$plugin.wtcart_pdf.order.subject.width}
     }
 
     cart {

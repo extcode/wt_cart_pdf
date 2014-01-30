@@ -11,11 +11,13 @@ plugin.wtcart_pdf {
     address {
       positionX = 20
       positionY = 45
+      width = 80
     }
 
     subject {
       positionX = 20
       positionY = 90
+      width = 160
     }
 
     cart {

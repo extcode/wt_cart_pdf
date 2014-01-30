@@ -194,8 +194,13 @@ class Tx_WtCartPdf_Hooks_Render extends tslib_pibase {
 		if ( $content != "" ) {
 			$positionX = $this->conf['address.']['positionX'];
 			$positionY = $this->conf['address.']['positionY'];
+			if ($this->conf['address.']['width']) {
+				$width = $this->conf['address.']['width'];
+			} else {
+				$width = 80;
+			}
 
-			$pdf->writeHtmlCell(80, 0, $positionX, $positionY, $content);
+			$pdf->writeHtmlCell($width, 0, $positionX, $positionY, $content);
 		}
 	}
 
@@ -217,8 +222,13 @@ class Tx_WtCartPdf_Hooks_Render extends tslib_pibase {
 		if ( $content != "" ) {
 			$positionX = $this->conf['subject.']['positionX'];
 			$positionY = $this->conf['subject.']['positionY'];
+			if ($this->conf['subject.']['width']) {
+				$width = $this->conf['subject.']['width'];
+			} else {
+				$width = 160;
+			}
 
-			$pdf->writeHtmlCell(160, 0, $positionX, $positionY, $content);
+			$pdf->writeHtmlCell($width, 0, $positionX, $positionY, $content);
 		}
 	}
 
