@@ -174,7 +174,7 @@ class Tx_WtCartPdf_Hooks_Render extends tslib_pibase {
 
 		$this->renderAddress( $pdf );
 		$this->renderSubject( $pdf, $params['cart'] );
-		$this->renderAdditionalTextblocks( $pdf );
+		$this->renderAdditionalTextblocks( $pdf, $params['cart'] );
 
 		$this->renderCart( $pdf );
 
@@ -267,16 +267,42 @@ class Tx_WtCartPdf_Hooks_Render extends tslib_pibase {
 
 	/**
 	 * @param $pdf
+	 * @param $cart Tx_WtCart_Domain_Model_Cart
 	 */
-	private function renderAdditionalTextblocks( &$pdf ) {
+	private function renderAdditionalTextblocks( &$pdf, $cart ) {
 		foreach ($this->conf['additionaltextblocks.'] as $key => $value) {
-			$html = $GLOBALS['TSFE']->cObj->cObjGetSingle($value['content'], $value['content.']);
+			$tsParams = array(
+				'ordernumber' => $cart->getOrderNumber(),
+				'invoicenumber' => $cart->getInvoiceNumber(),
+				'paymentName' => $cart->getPayment()->getName(),
+				'paymentNote' => $cart->getPayment()->getNote(),
+				'shippingName' => $cart->getShipping()->getName(),
+				'shippingNote' => $cart->getShipping()->getNote(),
+			);
+
+			if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['wt_cart_pdf']['addParamsToAdditionalTextblocks']) {
+				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['wt_cart_pdf']['addParamsToAdditionalTextblocks'] as $funcRef) {
+					if ($funcRef) {
+						$params = array(
+							'cart' => &$cart,
+							'tsParams' => &$tsParams
+						);
+
+						t3lib_div::callUserFunction($funcRef, $params, $this);
+					}
+				}
+			}
+
+			$this->cObj = t3lib_div::makeInstance( 'tslib_cObj' );
+			$this->cObj->start( $tsParams, $value['content'] );
+
+			$content = $this->cObj->cObjGetSingle($value['content'], $value['content.']);
 
 			if ($value['fontSize']) {
 				$pdf->setFontSize( $value['fontSize'] );
 			}
 
-			$pdf->writeHTMLCell($value['width'], $value['height'], $value['positionX'], $value['positionY'], $html, 0, 2, 0, true, $value['align'] ? $value['align'] : 'L', true);
+			$pdf->writeHTMLCell($value['width'], $value['height'], $value['positionX'], $value['positionY'], $content, 0, 2, 0, true, $value['align'] ? $value['align'] : 'L', true);
 
 			if ($value['fontSize']) {
 				$pdf->setFontSize( $this->conf['fontSize'] );
