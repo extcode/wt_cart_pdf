@@ -2,7 +2,7 @@ plugin.wtcart_pdf {
   order {
     template = EXT:wt_cart_pdf/files/templates/order/cart_table.html
 
-    include_pdf = typo3conf/ext/wt_cart_pdf/files/templates/order/include.pdf
+    include_pdf = EXT:wt_cart_pdf/files/templates/order/include.pdf
 
     dir = fileadmin/wt_cart_pdf/order
 
@@ -31,7 +31,7 @@ plugin.wtcart_pdf {
   invoice {
     template = EXT:wt_cart_pdf/files/templates/invoice/cart_table.html
 
-    include_pdf = typo3conf/ext/wt_cart_pdf/files/templates/invoice/include.pdf
+    include_pdf = EXT:wt_cart_pdf/files/templates/invoice/include.pdf
 
     dir = fileadmin/wt_cart_pdf/invoice
 
