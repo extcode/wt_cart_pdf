@@ -69,6 +69,11 @@ class Tx_WtCartPdf_Utility_Renderer extends tslib_pibase {
 	protected $orderItem;
 
 	/**
+	 *
+	 */
+	protected $pdf;
+
+	/**
 	 * @param $params
 	 * @param string $type
 	 * @internal param $session

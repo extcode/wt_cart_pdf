@@ -90,7 +90,7 @@ class Tx_WtCartPdf_Hooks_Render extends tslib_pibase {
 		$cart = $params['cart'];
 
 		$this->getPath( );
-		$this->getFilename( $cart );
+		$this->getFilename( $cart, $type );
 
 		if ( ! $this->pdfDirExists() ) {
 			return 1;
@@ -149,7 +149,8 @@ class Tx_WtCartPdf_Hooks_Render extends tslib_pibase {
 		$pdf->AddPage();
 
 		if ($this->conf['include_pdf']) {
-			$pdf->setSourceFile($this->conf['include_pdf']);
+			$templatePath = t3lib_div::getFileAbsFileName( $this->conf['include_pdf'] );
+			$pdf->setSourceFile( $templatePath );
 			$tplIdx = $pdf->importPage(1);
 			$pdf->useTemplate($tplIdx, 0, 0, 210);
 		}
@@ -302,7 +303,25 @@ class Tx_WtCartPdf_Hooks_Render extends tslib_pibase {
 				$pdf->setFontSize( $value['fontSize'] );
 			}
 
-			$pdf->writeHTMLCell($value['width'], $value['height'], $value['positionX'], $value['positionY'], $content, 0, 2, 0, true, $value['align'] ? $value['align'] : 'L', true);
+			$positionX = $value['positionX'];
+			$positionY = $value['positionY'];
+			if ( $value['width']) {
+				$width = $value['width'] ;
+			} else {
+				$width = 160;
+			}
+			if ( $value['height']) {
+				$height = $value['height'] ;
+			} else {
+				$height = 0;
+			}
+			if ( $value['align']) {
+				$align = $value['align'] ;
+			} else {
+				$align = 'L';
+			}
+
+			$pdf->writeHTMLCell( $width, $height, $positionX, $positionY, $content, 0, 0, false, true, $align, true);
 
 			if ($value['fontSize']) {
 				$pdf->setFontSize( $this->conf['fontSize'] );
@@ -371,23 +390,23 @@ class Tx_WtCartPdf_Hooks_Render extends tslib_pibase {
 
 	/**
 	 * @param $cart Tx_WtCart_Domain_Model_Cart
-	 * @return string
+	 * @param string $type
 	 */
-	private function getFilename( $cart ) {
-		$params = array(
-			'ordernumber' => $cart->getOrderNumber(),
-			'invoicenumber' => $cart->getInvoiceNumber()
-		);
-		$this->cObj = t3lib_div::makeInstance( 'tslib_cObj' );
-		$this->cObj->start( $params, $this->conf['pdf_filename'] );
-
-		$this->pdf_filename = $this->cObj->cObjGetSingle($this->conf['pdf_filename'], $this->conf['pdf_filename.']);
-
-		if ( ! preg_match('/\.pdf$/', $this->pdf_filename) ) {
-			$this->pdf_filename .= '.pdf';
+	private function getFilename( $cart, $type ) {
+		switch ($type) {
+			case 'order':
+				$filename = $cart->getOrderNumber();
+				break;
+			case 'invoice':
+				$filename = $cart->getInvoiceNumber();
+				break;
 		}
 
-		return $this->pdf_filename;
+		if ( ! preg_match('/\.pdf$/', $filename) ) {
+			$this->pdf_filename = $filename . '.pdf';
+		} else {
+			$this->pdf_filename = $filename;
+		}
 	}
 
 }

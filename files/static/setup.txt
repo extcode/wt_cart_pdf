@@ -91,8 +91,8 @@ plugin.tx_wtcart_pdf {
 
     additionaltextblocks {
       1 {
-        position-x = 120
-        position-y = 85
+        positionX = 120
+        positionY = 85
         width = 65
         align = R
         content = COA
