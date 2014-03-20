@@ -29,13 +29,15 @@ $EM_CONF[$_EXTKEY] = array(
 	'clearCacheOnLoad' => 0,
 	'lockType' => '',
 	'author_company' => '',
-	'version' => '0.1.0',
+	'version' => '2.1.0',
 	'constraints' => array(
 		'depends' => array(
-			'typo3' => '4.5',
+			'php' => '5.1.0-0.0.0',
+			'typo3' => '4.5.0-4.7.99',
+			'wt_cart' => '2.1.0',
+			'wt_cart_order' => '2.1.0',
 			'extcode_tcpdf' => '',
 			'extcode_fpdi' => '',
-			'wt_cart' => '2.0.1',
 		),
 		'conflicts' => array(
 		),

@@ -1,3 +1,14 @@
+module.tx_wtcartpdf {
+	view {
+		templateRootPath = {$module.tx_wtcartpdf.view.templateRootPath}
+		partialRootPath = {$module.tx_wtcartpdf.view.partialRootPath}
+		layoutRootPath = {$module.tx_wtcartpdf.view.layoutRootPath}
+	}
+	persistence {
+		storagePid = {$module.tx_wtcartpdf.persistence.storagePid}
+	}
+}
+
 plugin.tx_wtcart_pdf {
 
   order {

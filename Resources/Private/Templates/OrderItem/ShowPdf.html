@@ -1,0 +1,56 @@
+<f:layout name="Default" />
+
+<f:section name="main">
+	<table  width="450" cellpadding="3" cellspacing="0" border="0" style="width:450px;">
+		<tr>
+			<td width="20%">
+				<f:translate key="LLL:EXT:wt_cart_order/Resources/Private/Language/locallang_db.xml:tx_wtcartorder_domain_model_orderproduct.sku" />
+			</td>
+			<td width="50%">
+				<f:translate key="LLL:EXT:wt_cart_order/Resources/Private/Language/locallang_db.xml:tx_wtcartorder_domain_model_orderproduct.title" />
+			</td>
+			<td width="10%" style="text-align:right;">
+				<f:translate key="LLL:EXT:wt_cart_order/Resources/Private/Language/locallang_db.xml:tx_wtcartorder_domain_model_orderproduct.count" />
+			</td>
+			<td width="20%" style="text-align:right;">
+				<f:translate key="LLL:EXT:wt_cart_order/Resources/Private/Language/locallang_db.xml:tx_wtcartorder_domain_model_orderproduct.gross" />
+			</td>
+		</tr>
+		<f:for each="{orderItem.orderProduct}" as="orderProduct">
+			<tr>
+				<td>{orderProduct.sku}</td>
+				<td>{orderProduct.title}</td>
+				<td style="text-align:right;">
+					{orderProduct.count}
+				</td>
+				<td style="text-align:right;">
+					<f:format.currency currencySign="€" decimalSeparator="," thousandsSeparator=".">{orderProduct.gross}</f:format.currency>
+				</td>
+			</tr>
+		</f:for>
+		<tr style="background:#3d3a37;">
+			<td style="text-align:right;" colspan="3">
+				<f:translate key="LLL:EXT:wt_cart_order/Resources/Private/Language/locallang_db.xml:tx_wtcartorder_domain_model_orderitem.net" />
+			</td>
+			<td style="text-align:right;">
+				<f:format.currency currencySign="€" decimalSeparator="," thousandsSeparator=".">{orderItem.net}</f:format.currency>
+			</td>
+		</tr>
+		<f:for each="{orderItem.orderTax}" as="orderTax">
+			<tr style="background:#3d3a37;">
+				<td style="text-align:right;" colspan="3">{orderTax.name}</td>
+				<td style="text-align:right;">
+					<f:format.currency currencySign="€" decimalSeparator="," thousandsSeparator=".">{orderTax.sum}</f:format.currency>
+				</td>
+			</tr>
+		</f:for>
+		<tr style="background:#3d3a37;">
+			<td style="text-align:right;" colspan="3">
+				<f:translate key="LLL:EXT:wt_cart_order/Resources/Private/Language/locallang_db.xml:tx_wtcartorder_domain_model_orderitem.gross" />
+			</td>
+			<td style="text-align:right;">
+				<f:format.currency currencySign="€" decimalSeparator="," thousandsSeparator=".">{orderItem.gross}</f:format.currency>
+			</td>
+		</tr>
+	</table>
+</f:section>

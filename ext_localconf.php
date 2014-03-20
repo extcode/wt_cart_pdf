@@ -3,10 +3,8 @@ if (!defined('TYPO3_MODE')) {
 	die ('Access denied.');
 }
 
-$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['wt_cart']['afterSetOrderNumber'][] =
-	'EXT:' . $_EXTKEY . '/Classes/Hooks/Render.php:Tx_WtCartPdf_Hooks_Render->afterSetOrderNumber';
-
-$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['wt_cart']['afterSetInvoiceNumber'][] =
-	'EXT:' . $_EXTKEY . '/Classes/Hooks/Render.php:Tx_WtCartPdf_Hooks_Render->afterSetInvoiceNumber';
+$signalSlotDispatcher = t3lib_div::makeInstance('Tx_Extbase_SignalSlot_Dispatcher');
+$signalSlotDispatcher->connect('Tx_WtCartOrder_Hooks_OrderHook', 'slotAfterSaveOrderNumberToOrderItem', 'Tx_WtCartPdf_Utility_Renderer', 'createPdf', FALSE);
+$signalSlotDispatcher->connect('Tx_WtCartOrder_Hooks_OrderHook', 'slotAfterSaveInvoiceNumberToOrderItem', 'Tx_WtCartPdf_Utility_Renderer', 'createPdf', FALSE);
 
 ?>

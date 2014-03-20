@@ -25,7 +25,6 @@
 
 define('TYPO3_DLOG', $GLOBALS['TYPO3_CONF_VARS']['SYS']['enable_DLOG']);
 
-require_once(PATH_tslib . 'class.tslib_pibase.php');
 if (t3lib_extMgm::isLoaded('extcode_tcpdf')) {
 	require(t3lib_extMgm::extPath('extcode_tcpdf').'class.tx_extcode_tcpdf.php');
 }
@@ -36,7 +35,7 @@ if (t3lib_extMgm::isLoaded('extcode_fpdi')) {
 /**
  * @property mixed pdf
  */
-class Tx_WtCartPdf_Utility_Renderer extends tslib_pibase {
+class Tx_WtCartPdf_Utility_Renderer {
 
 	public $extKey = 'wt_cart_pdf';
 
@@ -74,13 +73,14 @@ class Tx_WtCartPdf_Utility_Renderer extends tslib_pibase {
 	protected $pdf;
 
 	/**
-	 * @param $params
-	 * @param string $type
-	 * @internal param $session
+	 * @param array $params
 	 * @return int
 	 */
-	public function createPdf(&$params, $type) {
+	public function createPdf( $params ) {
+		t3lib_div::devLog( 'createPdf', 'wt_cart_pdf', 0, $params );
+
 		$this->orderItem = $params['orderItem'];
+		$type = $params['type'];
 
 		$this->conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_wtcart_pdf.'][$type . '.'];
 		$this->abortOnError = $this->conf['abortOnError'];
@@ -94,8 +94,6 @@ class Tx_WtCartPdf_Utility_Renderer extends tslib_pibase {
 		if ( $this->pdfFileExists('before') ) {
 			return 0;
 		}
-
-		$this->pi_loadLL();
 
 		$this->renderPdf($params, $type);
 
@@ -173,7 +171,7 @@ class Tx_WtCartPdf_Utility_Renderer extends tslib_pibase {
 		$this->renderSubject();
 		$this->renderAdditionalTextblocks();
 
-		//$this->renderCart();
+		$this->renderCart();
 
 		$this->renderPaymentOptions();
 
@@ -184,9 +182,11 @@ class Tx_WtCartPdf_Utility_Renderer extends tslib_pibase {
 	 *
 	 */
 	private function renderCart() {
-		$conf['main.']['template'] = $this->conf['template'];
-		$powermailCart = t3lib_div::makeInstance('user_wtcart_powermailCart');
-		$html = $powermailCart->showCart($content = '', $conf);
+		$renderer = $this->getOrderItemRenderer( 'OrderItem/ShowPdf.html' );
+		// assign the data to it
+		$renderer->assign('orderItem', $this->orderItem);
+		// and do the rendering magic
+		$html = $renderer->render();
 
 		if ( $html ) {
 			$positionX = $this->conf['cart.']['positionX'];
@@ -196,6 +196,23 @@ class Tx_WtCartPdf_Utility_Renderer extends tslib_pibase {
 			$this->pdf->SetLineWidth(1);
 			$this->pdf->writeHTMLCell($width, 0, $positionX, $positionY, $html, 0, 2);
 		}
+	}
+
+	/**
+	 * This creates another stand-alone instance of the Fluid view to render a plain text e-mail template
+	 * @param string $templateName the name of the template to use
+	 * @return Tx_Fluid_View_StandaloneView the Fluid instance
+	 */
+	protected function getOrderItemRenderer( $templateName = 'Default.html' ) {
+		$objectManager = t3lib_div::makeInstance('Tx_Extbase_Object_ObjectManager');
+		$orderItemView = $objectManager->create('Tx_Fluid_View_StandaloneView');
+		$orderItemView->setFormat('html');
+		$orderItemView->setTemplatePathAndFilename( t3lib_div::getFileAbsFileName( 'EXT:wt_cart_pdf/Resources/Private/Templates/' . $templateName ) );
+		$orderItemView->setPartialRootPath( t3lib_div::getFileAbsFileName( 'EXT:wt_cart_pdf/Resources/Private/Partials/' ) );
+		$orderItemView->setLayoutRootPath( t3lib_div::getFileAbsFileName( 'EXT:wt_cart_pdf/Resources/Private/Layouts/' ) );
+		$orderItemView->assign( 'settings', $this->settings );
+
+		return $orderItemView;
 	}
 
 	/**
